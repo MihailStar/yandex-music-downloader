@@ -1,13 +1,12 @@
-import https from 'https';
 import {IncomingMessage} from 'http';
-
+import https from 'https';
 import {
+  AsyncErrorCallback,
+  AsyncEventCallback,
   DownloadItem,
-  DownloadManager as IDownloadManager,
   DownloadItemState,
   EventType,
-  AsyncEventCallback,
-  AsyncErrorCallback,
+  DownloadManager as IDownloadManager,
 } from './interfaces';
 
 type DownloadPartialCallback = (

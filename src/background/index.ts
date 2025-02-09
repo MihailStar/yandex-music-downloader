@@ -1,14 +1,11 @@
-import https from 'https';
 import {IncomingMessage} from 'http';
-
+import https from 'https';
+import {ChromeMessage, ChromeMessageType} from './interfaces';
 import {DownloadManager} from './services/download-manager';
 import {DownloadItem} from './services/download-manager/interfaces';
-
-import {YandexMusicAPI} from './services/yandex-music-api';
 import {TrackID3TagWriter} from './services/id3-tag-writer';
 import {UserSettings} from './services/user-settings';
-
-import {ChromeMessageType, ChromeMessage} from './interfaces';
+import {YandexMusicAPI} from './services/yandex-music-api';
 
 type ErrorCallback = (err: Error) => void;
 

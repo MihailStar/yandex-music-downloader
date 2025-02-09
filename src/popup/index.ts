@@ -1,5 +1,5 @@
+import {ChromeMessage, ChromeMessageType} from '../background/interfaces';
 import {DownloadItem} from '../background/services/download-manager/interfaces';
-import {ChromeMessageType, ChromeMessage} from '../background/interfaces';
 import {HTMLDownloadElement} from './download-element';
 
 const port = chrome.runtime.connect({name: 'com'});

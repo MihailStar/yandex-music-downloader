@@ -1,14 +1,13 @@
-import https from 'https';
 import {IncomingMessage} from 'http';
+import https from 'https';
 import md5 from 'md5';
-
 import {
-  Track,
   Album,
-  Playlist,
   Artist,
-  Lyric,
   YandexMusicAPI as IYandexMusicAPI,
+  Lyric,
+  Playlist,
+  Track,
 } from './interfaces';
 
 /**

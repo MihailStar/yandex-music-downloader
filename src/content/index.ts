@@ -1,4 +1,4 @@
-import {ChromeMessageType, ChromeMessage} from '../background/interfaces';
+import {ChromeMessage, ChromeMessageType} from '../background/interfaces';
 
 const DEBOUNCE_TIMEOUT = 1000;
 
