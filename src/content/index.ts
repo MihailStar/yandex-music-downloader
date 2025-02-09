@@ -398,6 +398,12 @@ const removeSidebarIcons = () => {
       return;
     }
 
+    const userPage = document.querySelector('.page-users');
+    if (userPage) {
+      addCenterblockTrackIcons();
+      return;
+    }
+
     const chartPage = document.querySelector('.page-main__chart');
     if (chartPage) {
       addCenterblockTrackIcons();
