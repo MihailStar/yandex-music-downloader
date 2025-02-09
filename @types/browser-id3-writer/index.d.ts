@@ -4,7 +4,8 @@ declare module 'browser-id3-writer' {
   type StringArrayID3Tags =
     | 'TPE1' // song artists
     | 'TCOM' // song composers
-    | 'TCON'; // song genres
+    | 'TCON' // song genres
+    | 'TPUB'; // album labels
 
   type StringID3Tags =
     | 'TLAN' // language
@@ -18,7 +19,6 @@ declare module 'browser-id3-writer' {
     | 'TRCK' // song number in album: 5 or 5/10
     | 'TPOS' // album disc number: 1 or 1/3
     | 'TMED' // media type
-    | 'TPUB' // label name
     | 'TCOP' // copyright
     | 'TKEY' // musical key in which the sound starts
     | 'TEXT' // lyricist / text writer

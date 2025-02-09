@@ -174,7 +174,9 @@ export class BackgroundApiService {
       }
 
       if (track.track.albums[0].labels.length !== 0) {
-        tagWriter.setLabel(track.track.albums[0].labels[0].name);
+        tagWriter.setLabels(
+          track.track.albums[0].labels.map(label => label.name),
+        );
       }
 
       if (track.lyric.length !== 0) {
