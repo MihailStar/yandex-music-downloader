@@ -66,7 +66,7 @@ declare module 'browser-id3-writer' {
     setFrame(frameName: IntegerID3Tags, frameValue: number): this;
     setFrame(
       frameName: 'USLT',
-      frameValue: {language?: string; description: string; lyrics: string}
+      frameValue: {language?: string; description: string; lyrics: string},
     ): this;
     setFrame(
       frameName: 'APIC',
@@ -75,15 +75,15 @@ declare module 'browser-id3-writer' {
         data: Buffer;
         description: string;
         useUnicodeEncoding?: boolean;
-      }
+      },
     ): this;
     setFrame(
       frameName: 'TXXX',
-      frameValue: {description: string; value: string}
+      frameValue: {description: string; value: string},
     ): this;
     setFrame(
       frameName: 'COMM',
-      frameValue: {language?: string; description: string; text: string}
+      frameValue: {language?: string; description: string; text: string},
     ): this;
     setFrame(frameName: 'PRIV', frameValue: {id: string; data: Buffer}): this;
 

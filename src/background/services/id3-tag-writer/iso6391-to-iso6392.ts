@@ -14,7 +14,7 @@ export class ISO6391ToISO6392Converter {
   constructor(defaultLanguage: string) {
     if (!/[a-z]{3}/i.test(defaultLanguage)) {
       throw new Error(
-        'Language must be coded following the ISO 639-2 standards'
+        'Language must be coded following the ISO 639-2 standards',
       );
     }
 
@@ -27,7 +27,7 @@ export class ISO6391ToISO6392Converter {
     }
     if (!/[a-z]{2}/i.test(lang)) {
       throw new Error(
-        'Language must be coded following the ISO 639-1 standards'
+        'Language must be coded following the ISO 639-1 standards',
       );
     }
 

@@ -13,7 +13,7 @@ import {
 type DownloadPartialCallback = (
   bytes: number,
   totalBytes: number,
-  closeConnection: () => void
+  closeConnection: () => void,
 ) => void;
 
 export class DownloadManager implements IDownloadManager {
@@ -27,7 +27,7 @@ export class DownloadManager implements IDownloadManager {
 
   private async downloadBuffer_(
     uri: string,
-    callback: DownloadPartialCallback
+    callback: DownloadPartialCallback,
   ) {
     const options = {
       path: uri,
@@ -64,7 +64,7 @@ export class DownloadManager implements IDownloadManager {
 
   private queueRemove_(downloadItemId: number) {
     const index = this.downloadQueue_.findIndex(
-      item => item.id === downloadItemId
+      item => item.id === downloadItemId,
     );
 
     if (index === -1) return;
@@ -76,7 +76,7 @@ export class DownloadManager implements IDownloadManager {
     if (this.queuePaused_) return;
 
     const downloadItem = this.downloadQueue_.find(
-      item => item.state === DownloadItemState.PENDING
+      item => item.state === DownloadItemState.PENDING,
     );
 
     if (!downloadItem) return;
@@ -101,7 +101,7 @@ export class DownloadManager implements IDownloadManager {
           }
           /* EMIT progress */
           this.emit_('progress', downloadItem);
-        }
+        },
       );
 
       if (downloadItem.bytes === null) {
@@ -140,7 +140,7 @@ export class DownloadManager implements IDownloadManager {
     name: string,
     filename: string,
     downloadPath = '',
-    customData?: {[key: string]: string | number | boolean | Buffer}
+    customData?: {[key: string]: string | number | boolean | Buffer},
   ): DownloadItem {
     const downloadItem: DownloadItem = {
       id: this.lastId_++,
@@ -170,7 +170,7 @@ export class DownloadManager implements IDownloadManager {
    */
   interrupt(downloadItemId: number) {
     const downloadItem = this.downloadQueue_.find(
-      item => item.id === downloadItemId
+      item => item.id === downloadItemId,
     );
 
     if (downloadItem) {
@@ -210,7 +210,7 @@ export class DownloadManager implements IDownloadManager {
    */
   clear(): void {
     this.downloadQueue_ = this.downloadQueue_.filter(
-      item => item.state !== DownloadItemState.PENDING
+      item => item.state !== DownloadItemState.PENDING,
     );
   }
   /**
@@ -270,7 +270,7 @@ export class DownloadManager implements IDownloadManager {
   /* Events */
   on(
     type: EventType | 'error',
-    callback: AsyncEventCallback | AsyncErrorCallback
+    callback: AsyncEventCallback | AsyncErrorCallback,
   ): void {
     if (type === 'error') {
       if (!this.errorListeners_.includes(callback)) {
@@ -285,7 +285,7 @@ export class DownloadManager implements IDownloadManager {
   /* Removes hook */
   removeListener(
     type: EventType | 'error',
-    callback: AsyncEventCallback | AsyncErrorCallback
+    callback: AsyncEventCallback | AsyncErrorCallback,
   ): void {
     if (type === 'error') {
       const index = this.errorListeners_.indexOf(callback);
@@ -294,7 +294,7 @@ export class DownloadManager implements IDownloadManager {
       this.errorListeners_.splice(index, 1);
     } else {
       const index = this.listeners_[type].indexOf(
-        callback as AsyncEventCallback
+        callback as AsyncEventCallback,
       );
       if (index === -1) return;
 

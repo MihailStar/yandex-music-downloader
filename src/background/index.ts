@@ -20,7 +20,7 @@ export class BackgroundApiService {
 
   private static errorListeners_: ErrorCallback[] = [];
   private static completeEventCallback_: (
-    downloadItem: DownloadItem
+    downloadItem: DownloadItem,
   ) => Promise<void>;
   protected static instance_: BackgroundApiService | null;
   /**
@@ -45,7 +45,7 @@ export class BackgroundApiService {
     return new BackgroundApiService(
       yma,
       this.userSettings,
-      this.downloadManager
+      this.downloadManager,
     );
   }
   /**
@@ -54,7 +54,7 @@ export class BackgroundApiService {
   private constructor(
     yandexMusicApi: YandexMusicAPI,
     userSettings: UserSettings,
-    downloadManager: DownloadManager
+    downloadManager: DownloadManager,
   ) {
     this.yandexMusicApi = yandexMusicApi;
     BackgroundApiService.userSettings = userSettings;
@@ -143,8 +143,8 @@ export class BackgroundApiService {
         const cover = await this.downloadCover_(
           await yandexMusicApi.getCoverDownloadLink(
             track.track.coverUri,
-            BackgroundApiService.userSettings.coverSize
-          )
+            BackgroundApiService.userSettings.coverSize,
+          ),
         );
         tagWriter.setCover(cover, track.track.title);
       }
@@ -157,7 +157,7 @@ export class BackgroundApiService {
         tagWriter.setLyric(
           track.lyric[0].fullLyrics,
           track.track.title,
-          track.lyric[0].textLanguage
+          track.lyric[0].textLanguage,
         );
       }
 
@@ -173,7 +173,7 @@ export class BackgroundApiService {
           () => {
             tagWriter.revokeUrl();
             resolve();
-          }
+          },
         );
       });
     } catch (err) {
@@ -207,7 +207,7 @@ export class BackgroundApiService {
     template: string,
     title: string,
     album: string,
-    artist: string
+    artist: string,
   ): string {
     const filename = template
       .replaceAll('{title}', title)
@@ -246,15 +246,14 @@ export class BackgroundApiService {
 
       if (!track.track.available) return;
 
-      const downloadUrl = await this.yandexMusicApi.getTrackDownloadLink(
-        +trackId
-      );
+      const downloadUrl =
+        await this.yandexMusicApi.getTrackDownloadLink(+trackId);
 
       const filename = BackgroundApiService.generateTrackFilename_(
         BackgroundApiService.userSettings.filenameFormat,
         track.track.title,
         track.track.albums.length > 0 ? track.track.albums[0].title : '',
-        track.track.artists.length > 0 ? track.track.artists[0].name : ''
+        track.track.artists.length > 0 ? track.track.artists[0].name : '',
       );
 
       const path = BackgroundApiService.userSettings.downloadPath;
@@ -264,7 +263,7 @@ export class BackgroundApiService {
         track.track.title,
         filename + '.mp3',
         path,
-        {trackId, locale: this.yandexMusicApi.getLocale()}
+        {trackId, locale: this.yandexMusicApi.getLocale()},
       );
     } catch (err) {
       BackgroundApiService.emitError_(err);
@@ -283,14 +282,14 @@ export class BackgroundApiService {
         try {
           if (!track.available) continue;
           const downloadUrl = await this.yandexMusicApi.getTrackDownloadLink(
-            +track.id
+            +track.id,
           );
 
           const filename = BackgroundApiService.generateTrackFilename_(
             BackgroundApiService.userSettings.filenameFormat,
             track.title,
             track.albums.length > 0 ? track.albums[0].title : '',
-            track.artists.length > 0 ? track.artists[0].name : ''
+            track.artists.length > 0 ? track.artists[0].name : '',
           );
 
           let path = BackgroundApiService.userSettings.downloadPath;
@@ -299,7 +298,7 @@ export class BackgroundApiService {
           ) {
             if (album.artists.length > 0) {
               path += `${BackgroundApiService.encodeFolderName_(
-                album.artists[0].name
+                album.artists[0].name,
               )}-${BackgroundApiService.encodeFolderName_(album.title)}/`;
             } else {
               path += `${BackgroundApiService.encodeFolderName_(album.title)}/`;
@@ -314,7 +313,7 @@ export class BackgroundApiService {
             track.title,
             filename + '.mp3',
             path,
-            {trackId: track.id, locale: this.yandexMusicApi.getLocale()}
+            {trackId: track.id, locale: this.yandexMusicApi.getLocale()},
           );
         } catch (err) {
           BackgroundApiService.emitError_(err);
@@ -334,14 +333,14 @@ export class BackgroundApiService {
       try {
         if (!track.available) continue;
         const downloadUrl = await this.yandexMusicApi.getTrackDownloadLink(
-          +track.id
+          +track.id,
         );
 
         const filename = BackgroundApiService.generateTrackFilename_(
           BackgroundApiService.userSettings.filenameFormat,
           track.title,
           track.albums.length > 0 ? track.albums[0].title : '',
-          track.artists.length > 0 ? track.artists[0].name : ''
+          track.artists.length > 0 ? track.artists[0].name : '',
         );
 
         let path = BackgroundApiService.userSettings.downloadPath;
@@ -356,7 +355,7 @@ export class BackgroundApiService {
           track.title,
           filename + '.mp3',
           path,
-          {trackId: track.id, locale: this.yandexMusicApi.getLocale()}
+          {trackId: track.id, locale: this.yandexMusicApi.getLocale()},
         );
       } catch (err) {
         BackgroundApiService.emitError_(err);
@@ -377,20 +376,20 @@ export class BackgroundApiService {
         if (!track.available) continue;
 
         const downloadUrl = await this.yandexMusicApi.getTrackDownloadLink(
-          +track.id
+          +track.id,
         );
 
         const filename = BackgroundApiService.generateTrackFilename_(
           BackgroundApiService.userSettings.filenameFormat,
           track.title,
           track.albums.length > 0 ? track.albums[0].title : '',
-          track.artists.length > 0 ? track.artists[0].name : ''
+          track.artists.length > 0 ? track.artists[0].name : '',
         );
 
         let path = BackgroundApiService.userSettings.downloadPath;
         if (BackgroundApiService.userSettings.downloadArtistsInSeparateFolder) {
           path += `${BackgroundApiService.encodeFolderName_(
-            artist.artist.name
+            artist.artist.name,
           )}/`;
         }
 
@@ -399,7 +398,7 @@ export class BackgroundApiService {
           track.title,
           filename + '.mp3',
           path,
-          {trackId: track.id, locale: this.yandexMusicApi.getLocale()}
+          {trackId: track.id, locale: this.yandexMusicApi.getLocale()},
         );
       } catch (err) {
         BackgroundApiService.emitError_(err);
@@ -469,7 +468,7 @@ chrome.runtime.onConnect.addListener(async port => {
 
   const downloadErrorEventCallback = async (
     downloadItem: DownloadItem,
-    error: Error
+    error: Error,
   ) => {
     const message: ChromeMessage = {
       type: ChromeMessageType.DOWNLOAD_ERROR_EVENT,
@@ -499,22 +498,22 @@ chrome.runtime.onConnect.addListener(async port => {
         BackgroundApiService.downloadManager.on('add', addEventCallback);
         BackgroundApiService.downloadManager.on(
           'progress',
-          progressEventCallback
+          progressEventCallback,
         );
         BackgroundApiService.downloadManager.on(
           'interrupted',
-          interruptedEventCallback
+          interruptedEventCallback,
         );
         BackgroundApiService.downloadManager.on(
           'complete',
-          completeEventCallback
+          completeEventCallback,
         );
         break;
       }
       case ChromeMessageType.ADD_ERROR_LISTENER: {
         BackgroundApiService.downloadManager.on(
           'error',
-          downloadErrorEventCallback
+          downloadErrorEventCallback,
         );
         BackgroundApiService.on('error', errorEventCallback);
         break;
@@ -561,24 +560,24 @@ chrome.runtime.onConnect.addListener(async port => {
     /* Remove registered hooks */
     BackgroundApiService.downloadManager.removeListener(
       'add',
-      addEventCallback
+      addEventCallback,
     );
     BackgroundApiService.downloadManager.removeListener(
       'progress',
-      progressEventCallback
+      progressEventCallback,
     );
     BackgroundApiService.downloadManager.removeListener(
       'interrupted',
-      interruptedEventCallback
+      interruptedEventCallback,
     );
     BackgroundApiService.downloadManager.removeListener(
       'complete',
-      completeEventCallback
+      completeEventCallback,
     );
     /* Remove registered error listeners */
     BackgroundApiService.downloadManager.removeListener(
       'error',
-      downloadErrorEventCallback
+      downloadErrorEventCallback,
     );
     BackgroundApiService.removeListener('error', errorEventCallback);
   });

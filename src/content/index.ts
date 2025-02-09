@@ -109,7 +109,7 @@ const addTrackIcons = (trackElements: NodeListOf<Element>) => {
 const addPlayerIcon = () => {
   const par = document.querySelector('.player-controls__seq-controls')!;
   const parPodcast = document.querySelector(
-    '.player-controls__speed-controls'
+    '.player-controls__speed-controls',
   )!;
   const div = document.createElement('div');
   const icon = document.createElement('span');
@@ -117,7 +117,7 @@ const addPlayerIcon = () => {
   div.classList.add(
     'player-controls__btn',
     'deco-player-controls__button',
-    'player-controls__btn_download'
+    'player-controls__btn_download',
   );
 
   div.title = 'Загрузить текущий трек';
@@ -139,7 +139,7 @@ const addPlayerIcon = () => {
       const a = document.querySelector('.player-controls .track__name a')!;
       const url = a.getAttribute('href')!;
       downloadTrack(+url.split('/')[4]);
-    }, DEBOUNCE_TIMEOUT)
+    }, DEBOUNCE_TIMEOUT),
   );
 
   parPodcast
@@ -150,7 +150,7 @@ const addPlayerIcon = () => {
         const a = document.querySelector('.player-controls .track__name a')!;
         const url = a.getAttribute('href')!;
         downloadTrack(+url.split('/')[4]);
-      }, DEBOUNCE_TIMEOUT)
+      }, DEBOUNCE_TIMEOUT),
     );
 };
 
@@ -179,7 +179,7 @@ const addSidebarIcons = () => {
     'd-button_size_L',
     'd-button_w-icon',
     'd-button_w-icon-centered',
-    'sidebar__YMD-button'
+    'sidebar__YMD-button',
   );
   inner1.classList.add('d-button-inner', 'deco-button-stylable');
   inner2.classList.add('d-button__inner');
@@ -214,7 +214,7 @@ const addSidebarIcons = () => {
         /* album */
         downloadAlbum(parts[2]);
       }
-    }, DEBOUNCE_TIMEOUT)
+    }, DEBOUNCE_TIMEOUT),
   );
   sidebarControls.append(button);
 };
@@ -253,7 +253,7 @@ const addArtistPageIcons = (artistPage: Element) => {
   addCenterblockTrackIcons();
 
   const buttonContainer = artistPage.querySelector(
-    '.d-generic-page-head__main-actions'
+    '.d-generic-page-head__main-actions',
   )!;
 
   if (buttonContainer.querySelector('.YMD-icon')) return;
@@ -270,7 +270,7 @@ const addArtistPageIcons = (artistPage: Element) => {
     'd-button_size_L',
     'd-button_w-icon',
     'd-button_w-icon-centered',
-    'page__YMD-button'
+    'page__YMD-button',
   );
   inner1.classList.add('d-button-inner', 'deco-button-stylable');
   inner2.classList.add('d-button__inner');
@@ -291,7 +291,7 @@ const addArtistPageIcons = (artistPage: Element) => {
     debounce(() => {
       const parts = window.location.pathname.split('/');
       downloadArtist(parts[2]);
-    }, DEBOUNCE_TIMEOUT)
+    }, DEBOUNCE_TIMEOUT),
   );
 
   buttonContainer.append(button);
@@ -301,7 +301,7 @@ const addAlbumPageIcons = (albumPage: Element) => {
   addCenterblockTrackIcons();
 
   const buttonContainer = albumPage.querySelector(
-    '.d-generic-page-head__main-actions'
+    '.d-generic-page-head__main-actions',
   )!;
 
   if (buttonContainer.querySelector('.YMD-icon')) return;
@@ -318,7 +318,7 @@ const addAlbumPageIcons = (albumPage: Element) => {
     'd-button_size_L',
     'd-button_w-icon',
     'd-button_w-icon-centered',
-    'page__YMD-button'
+    'page__YMD-button',
   );
   inner1.classList.add('d-button-inner', 'deco-button-stylable');
   inner2.classList.add('d-button__inner');
@@ -339,7 +339,7 @@ const addAlbumPageIcons = (albumPage: Element) => {
     debounce(() => {
       const parts = window.location.pathname.split('/');
       downloadAlbum(parts[2]);
-    }, DEBOUNCE_TIMEOUT)
+    }, DEBOUNCE_TIMEOUT),
   );
 
   buttonContainer.append(button);
