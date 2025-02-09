@@ -1,4 +1,4 @@
-import {EventType, DownloadItem} from '../services/download-manager/interfaces';
+import {DownloadItem, EventType} from '../services/download-manager/interfaces';
 
 export enum ChromeMessageType {
   DOWNLOAD_TRACK = 0,

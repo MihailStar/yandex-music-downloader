@@ -59,10 +59,10 @@ export class TrackID3TagWriter {
     return this;
   }
   /**
-   * Sets name of the album's label
+   * Sets labels of the album as an array of strings
    */
-  setLabel(label: string): this {
-    this.id3Writer_.setFrame('TPUB', label);
+  setLabels(labels: string[]): this {
+    this.id3Writer_.setFrame('TPUB', labels);
     return this;
   }
   /**

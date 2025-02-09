@@ -1,4 +1,4 @@
-import {ChromeMessageType, ChromeMessage} from '../background/interfaces';
+import {ChromeMessage, ChromeMessageType} from '../background/interfaces';
 
 const DEBOUNCE_TIMEOUT = 1000;
 
@@ -109,7 +109,7 @@ const addTrackIcons = (trackElements: NodeListOf<Element>) => {
 const addPlayerIcon = () => {
   const par = document.querySelector('.player-controls__seq-controls')!;
   const parPodcast = document.querySelector(
-    '.player-controls__speed-controls'
+    '.player-controls__speed-controls',
   )!;
   const div = document.createElement('div');
   const icon = document.createElement('span');
@@ -117,7 +117,7 @@ const addPlayerIcon = () => {
   div.classList.add(
     'player-controls__btn',
     'deco-player-controls__button',
-    'player-controls__btn_download'
+    'player-controls__btn_download',
   );
 
   div.title = 'Загрузить текущий трек';
@@ -139,7 +139,7 @@ const addPlayerIcon = () => {
       const a = document.querySelector('.player-controls .track__name a')!;
       const url = a.getAttribute('href')!;
       downloadTrack(+url.split('/')[4]);
-    }, DEBOUNCE_TIMEOUT)
+    }, DEBOUNCE_TIMEOUT),
   );
 
   parPodcast
@@ -150,7 +150,7 @@ const addPlayerIcon = () => {
         const a = document.querySelector('.player-controls .track__name a')!;
         const url = a.getAttribute('href')!;
         downloadTrack(+url.split('/')[4]);
-      }, DEBOUNCE_TIMEOUT)
+      }, DEBOUNCE_TIMEOUT),
     );
 };
 
@@ -179,7 +179,7 @@ const addSidebarIcons = () => {
     'd-button_size_L',
     'd-button_w-icon',
     'd-button_w-icon-centered',
-    'sidebar__YMD-button'
+    'sidebar__YMD-button',
   );
   inner1.classList.add('d-button-inner', 'deco-button-stylable');
   inner2.classList.add('d-button__inner');
@@ -214,7 +214,7 @@ const addSidebarIcons = () => {
         /* album */
         downloadAlbum(parts[2]);
       }
-    }, DEBOUNCE_TIMEOUT)
+    }, DEBOUNCE_TIMEOUT),
   );
   sidebarControls.append(button);
 };
@@ -249,12 +249,12 @@ const addCenterblockTrackIcons = () => {
   });
 };
 
-const addArtistPageIcons = (artistPage: Element) => {
-  addCenterblockTrackIcons();
-
-  const buttonContainer = artistPage.querySelector(
-    '.d-generic-page-head__main-actions'
-  )!;
+const addPageButton = (
+  page: Element,
+  containerSelector: string,
+  callback: () => void,
+) => {
+  const buttonContainer = page.querySelector(containerSelector)!;
 
   if (buttonContainer.querySelector('.YMD-icon')) return;
 
@@ -270,7 +270,7 @@ const addArtistPageIcons = (artistPage: Element) => {
     'd-button_size_L',
     'd-button_w-icon',
     'd-button_w-icon-centered',
-    'page__YMD-button'
+    'page__YMD-button',
   );
   inner1.classList.add('d-button-inner', 'deco-button-stylable');
   inner2.classList.add('d-button__inner');
@@ -286,63 +286,36 @@ const addArtistPageIcons = (artistPage: Element) => {
   inner1.append(inner2);
   button.append(inner1);
 
-  button.addEventListener(
-    'click',
-    debounce(() => {
-      const parts = window.location.pathname.split('/');
-      downloadArtist(parts[2]);
-    }, DEBOUNCE_TIMEOUT)
-  );
+  button.addEventListener('click', debounce(callback, DEBOUNCE_TIMEOUT));
 
   buttonContainer.append(button);
+};
+
+const addArtistPageIcons = (artistPage: Element) => {
+  addCenterblockTrackIcons();
+
+  addPageButton(artistPage, '.d-generic-page-head__main-actions', () => {
+    const parts = window.location.pathname.split('/');
+    downloadArtist(parts[2]);
+  });
 };
 
 const addAlbumPageIcons = (albumPage: Element) => {
   addCenterblockTrackIcons();
 
-  const buttonContainer = albumPage.querySelector(
-    '.d-generic-page-head__main-actions'
-  )!;
+  addPageButton(albumPage, '.d-generic-page-head__main-actions', () => {
+    const parts = window.location.pathname.split('/');
+    downloadAlbum(parts[2]);
+  });
+};
 
-  if (buttonContainer.querySelector('.YMD-icon')) return;
+const addPlaylistPageIcons = (playlistPage: Element) => {
+  addCenterblockTrackIcons();
 
-  const button = document.createElement('button');
-  const inner1 = document.createElement('span');
-  const inner2 = document.createElement('span');
-  const icon = document.createElement('span');
-  button.classList.add(
-    'd-button',
-    'deco-button',
-    'deco-button-transparent',
-    'd-button_rounded',
-    'd-button_size_L',
-    'd-button_w-icon',
-    'd-button_w-icon-centered',
-    'page__YMD-button'
-  );
-  inner1.classList.add('d-button-inner', 'deco-button-stylable');
-  inner2.classList.add('d-button__inner');
-  icon.classList.add('YMD-icon', 'page__YMD-icon');
-  button.title = 'Загрузить';
-  const dark = document.body.classList.contains('theme-black');
-  if (dark) {
-    icon.classList.add('YMD-icon-dark');
-  } else {
-    icon.classList.add('YMD-icon-light');
-  }
-  inner2.append(icon);
-  inner1.append(inner2);
-  button.append(inner1);
-
-  button.addEventListener(
-    'click',
-    debounce(() => {
-      const parts = window.location.pathname.split('/');
-      downloadAlbum(parts[2]);
-    }, DEBOUNCE_TIMEOUT)
-  );
-
-  buttonContainer.append(button);
+  addPageButton(playlistPage, '.page-playlist__controls', () => {
+    const parts = window.location.pathname.split('/');
+    downloadPlaylist(parts[2], parts[4]);
+  });
 };
 
 const removeSidebarIcons = () => {
@@ -416,6 +389,18 @@ const removeSidebarIcons = () => {
     const albumPage = document.querySelector('.page-album');
     if (albumPage) {
       addAlbumPageIcons(albumPage);
+      return;
+    }
+
+    const playlistPage = document.querySelector('.page-playlist');
+    if (playlistPage) {
+      addPlaylistPageIcons(playlistPage);
+      return;
+    }
+
+    const userPage = document.querySelector('.page-users');
+    if (userPage) {
+      addCenterblockTrackIcons();
       return;
     }
 

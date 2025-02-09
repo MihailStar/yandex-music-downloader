@@ -1,19 +1,19 @@
-import https from 'https';
 import {IncomingMessage} from 'http';
-
+import https from 'https';
+import {getExceptionError} from '../../get-exception-error';
 import {
+  AsyncErrorCallback,
+  AsyncEventCallback,
   DownloadItem,
-  DownloadManager as IDownloadManager,
   DownloadItemState,
   EventType,
-  AsyncEventCallback,
-  AsyncErrorCallback,
+  DownloadManager as IDownloadManager,
 } from './interfaces';
 
 type DownloadPartialCallback = (
   bytes: number,
   totalBytes: number,
-  closeConnection: () => void
+  closeConnection: () => void,
 ) => void;
 
 export class DownloadManager implements IDownloadManager {
@@ -27,7 +27,7 @@ export class DownloadManager implements IDownloadManager {
 
   private async downloadBuffer_(
     uri: string,
-    callback: DownloadPartialCallback
+    callback: DownloadPartialCallback,
   ) {
     const options = {
       path: uri,
@@ -64,7 +64,7 @@ export class DownloadManager implements IDownloadManager {
 
   private queueRemove_(downloadItemId: number) {
     const index = this.downloadQueue_.findIndex(
-      item => item.id === downloadItemId
+      item => item.id === downloadItemId,
     );
 
     if (index === -1) return;
@@ -76,7 +76,7 @@ export class DownloadManager implements IDownloadManager {
     if (this.queuePaused_) return;
 
     const downloadItem = this.downloadQueue_.find(
-      item => item.state === DownloadItemState.PENDING
+      item => item.state === DownloadItemState.PENDING,
     );
 
     if (!downloadItem) return;
@@ -87,7 +87,7 @@ export class DownloadManager implements IDownloadManager {
     downloadItem.state = DownloadItemState.IN_PROGRESS;
 
     /* EMIT state change */
-    this.emit_('progress', downloadItem);
+    void this.emit_('progress', downloadItem);
 
     try {
       downloadItem.bytes = await this.downloadBuffer_(
@@ -100,29 +100,29 @@ export class DownloadManager implements IDownloadManager {
             closeConnection();
           }
           /* EMIT progress */
-          this.emit_('progress', downloadItem);
-        }
+          void this.emit_('progress', downloadItem);
+        },
       );
 
       if (downloadItem.bytes === null) {
         downloadItem.state = DownloadItemState.INTERRUPTED;
         /* EMIT interrupted */
-        this.emit_('interrupted', downloadItem);
+        void this.emit_('interrupted', downloadItem);
       } else {
         downloadItem.state = DownloadItemState.COMPLETE;
         /* EMIT complete */
-        this.emit_('complete', downloadItem);
+        void this.emit_('complete', downloadItem);
       }
-    } catch (err) {
+    } catch (reason) {
       downloadItem.state = DownloadItemState.ERROR;
       /* EMIT ERROR */
-      this.emitError_(downloadItem, err);
+      void this.emitError_(downloadItem, getExceptionError(reason));
     }
 
     this.inProgressSize_--;
 
     this.queueRemove_(downloadItem.id);
-    this.queueProcessNext_();
+    void this.queueProcessNext_();
   }
 
   constructor(concurrency = 1) {
@@ -140,7 +140,7 @@ export class DownloadManager implements IDownloadManager {
     name: string,
     filename: string,
     downloadPath = '',
-    customData?: {[key: string]: string | number | boolean | Buffer}
+    customData?: {[key: string]: string | number | boolean | Buffer},
   ): DownloadItem {
     const downloadItem: DownloadItem = {
       id: this.lastId_++,
@@ -158,9 +158,9 @@ export class DownloadManager implements IDownloadManager {
 
     this.downloadQueue_.push(downloadItem);
 
-    this.emit_('add', downloadItem);
+    void this.emit_('add', downloadItem);
 
-    this.queueProcessNext_();
+    void this.queueProcessNext_();
 
     return downloadItem;
   }
@@ -170,7 +170,7 @@ export class DownloadManager implements IDownloadManager {
    */
   interrupt(downloadItemId: number) {
     const downloadItem = this.downloadQueue_.find(
-      item => item.id === downloadItemId
+      item => item.id === downloadItemId,
     );
 
     if (downloadItem) {
@@ -179,7 +179,7 @@ export class DownloadManager implements IDownloadManager {
       } else if (downloadItem.state === DownloadItemState.PENDING) {
         downloadItem.state = DownloadItemState.INTERRUPTED;
         /* EMIT interrupted */
-        this.emit_('interrupted', downloadItem);
+        void this.emit_('interrupted', downloadItem);
         this.queueRemove_(downloadItemId);
       }
     }
@@ -195,7 +195,7 @@ export class DownloadManager implements IDownloadManager {
    */
   run(): void {
     this.queuePaused_ = false;
-    this.queueProcessNext_();
+    void this.queueProcessNext_();
   }
   /**
    * Stops queue execution. Doen't stop downloads in progress.
@@ -210,7 +210,7 @@ export class DownloadManager implements IDownloadManager {
    */
   clear(): void {
     this.downloadQueue_ = this.downloadQueue_.filter(
-      item => item.state !== DownloadItemState.PENDING
+      item => item.state !== DownloadItemState.PENDING,
     );
   }
   /**
@@ -248,8 +248,8 @@ export class DownloadManager implements IDownloadManager {
     for await (const listener of this.listeners_[type]) {
       try {
         await listener(item);
-      } catch (err) {
-        console.error(err);
+      } catch (reason) {
+        console.error(reason);
       }
     }
   }
@@ -261,8 +261,8 @@ export class DownloadManager implements IDownloadManager {
     for await (const errorListener of this.errorListeners_) {
       try {
         await errorListener(item, err);
-      } catch (err) {
-        console.error(err);
+      } catch (reason) {
+        console.error(reason);
       }
     }
   }
@@ -270,7 +270,7 @@ export class DownloadManager implements IDownloadManager {
   /* Events */
   on(
     type: EventType | 'error',
-    callback: AsyncEventCallback | AsyncErrorCallback
+    callback: AsyncEventCallback | AsyncErrorCallback,
   ): void {
     if (type === 'error') {
       if (!this.errorListeners_.includes(callback)) {
@@ -285,7 +285,7 @@ export class DownloadManager implements IDownloadManager {
   /* Removes hook */
   removeListener(
     type: EventType | 'error',
-    callback: AsyncEventCallback | AsyncErrorCallback
+    callback: AsyncEventCallback | AsyncErrorCallback,
   ): void {
     if (type === 'error') {
       const index = this.errorListeners_.indexOf(callback);
@@ -294,7 +294,7 @@ export class DownloadManager implements IDownloadManager {
       this.errorListeners_.splice(index, 1);
     } else {
       const index = this.listeners_[type].indexOf(
-        callback as AsyncEventCallback
+        callback as AsyncEventCallback,
       );
       if (index === -1) return;
 

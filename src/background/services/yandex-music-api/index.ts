@@ -1,14 +1,13 @@
-import https from 'https';
 import {IncomingMessage} from 'http';
+import https from 'https';
 import md5 from 'md5';
-
 import {
-  Track,
   Album,
-  Playlist,
   Artist,
-  Lyric,
   YandexMusicAPI as IYandexMusicAPI,
+  Lyric,
+  Playlist,
+  Track,
 } from './interfaces';
 
 /**
@@ -108,7 +107,7 @@ export class YandexMusicAPI implements IYandexMusicAPI {
     readonly lyric: Lyric[];
   }> {
     return await this.getObject(
-      `${this.getHostname()}/handlers/track.jsx?track=${trackId}`
+      `${this.getHostname()}/handlers/track.jsx?track=${trackId}`,
     );
   }
   /**
@@ -116,7 +115,7 @@ export class YandexMusicAPI implements IYandexMusicAPI {
    */
   async getAlbum(albumId: number): Promise<Album> {
     return await this.getObject(
-      `${this.getHostname()}/handlers/album.jsx?album=${albumId}`
+      `${this.getHostname()}/handlers/album.jsx?album=${albumId}`,
     );
   }
   /**
@@ -137,7 +136,7 @@ export class YandexMusicAPI implements IYandexMusicAPI {
     readonly trackIds: number[];
   }> {
     return await this.getObject(
-      `${this.getHostname()}/handlers/artist.jsx?artist=${artistId}`
+      `${this.getHostname()}/handlers/artist.jsx?artist=${artistId}`,
     );
   }
   /**
@@ -145,10 +144,10 @@ export class YandexMusicAPI implements IYandexMusicAPI {
    */
   async getPlaylist(
     uid: number | string,
-    kind: number
+    kind: number,
   ): Promise<{playlist: Playlist}> {
     return await this.getObject(
-      `${this.getHostname()}/handlers/playlist.jsx?owner=${uid}&kinds=${kind}`
+      `${this.getHostname()}/handlers/playlist.jsx?owner=${uid}&kinds=${kind}`,
     );
   }
   /**
@@ -162,17 +161,17 @@ export class YandexMusicAPI implements IYandexMusicAPI {
       `overembed=no&__t=${Date.now()}`;
 
     const trackDownloadInfo = await this.getObject<TrackDownloadInfo>(
-      this.getHostname() + trackDownloadApiPath
+      this.getHostname() + trackDownloadApiPath,
     );
 
     const fileDownloadInfo = await this.getObject<FileDownloadInfo>(
-      trackDownloadInfo.src.slice(2) + '&format=json'
+      trackDownloadInfo.src.slice(2) + '&format=json',
     );
 
     const hasht = md5(
       'XGRlBW9FXlekgbPrRHuSiA' +
         fileDownloadInfo.path.substring(1) +
-        fileDownloadInfo.s
+        fileDownloadInfo.s,
     );
     const path =
       `/get-mp3/${hasht}/${fileDownloadInfo.ts}` +

@@ -1,5 +1,5 @@
+import {ChromeMessage, ChromeMessageType} from '../background/interfaces';
 import {DownloadItem} from '../background/services/download-manager/interfaces';
-import {ChromeMessageType, ChromeMessage} from '../background/interfaces';
 import {HTMLDownloadElement} from './download-element';
 
 const port = chrome.runtime.connect({name: 'com'});
@@ -22,7 +22,7 @@ const createDownloadElement = (
   downloadQueue: Element,
   list: HTMLDownloadElement[],
   _port: chrome.runtime.Port,
-  downloadItem: DownloadItem
+  downloadItem: DownloadItem,
 ) => {
   const element = new HTMLDownloadElement(downloadItem);
   list.push(element);
@@ -43,7 +43,7 @@ port.onMessage.addListener((message: ChromeMessage) => {
   switch (message.type) {
     case ChromeMessageType.DOWNLOAD_EVENT: {
       const item = list.find(
-        el => el.downloadItem.id === message.downloadItem.id
+        el => el.downloadItem.id === message.downloadItem.id,
       );
       if (item) {
         item.update(message.downloadItem);

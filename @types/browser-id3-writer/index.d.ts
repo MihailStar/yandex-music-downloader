@@ -4,7 +4,8 @@ declare module 'browser-id3-writer' {
   type StringArrayID3Tags =
     | 'TPE1' // song artists
     | 'TCOM' // song composers
-    | 'TCON'; // song genres
+    | 'TCON' // song genres
+    | 'TPUB'; // album labels
 
   type StringID3Tags =
     | 'TLAN' // language
@@ -18,7 +19,6 @@ declare module 'browser-id3-writer' {
     | 'TRCK' // song number in album: 5 or 5/10
     | 'TPOS' // album disc number: 1 or 1/3
     | 'TMED' // media type
-    | 'TPUB' // label name
     | 'TCOP' // copyright
     | 'TKEY' // musical key in which the sound starts
     | 'TEXT' // lyricist / text writer
@@ -66,7 +66,7 @@ declare module 'browser-id3-writer' {
     setFrame(frameName: IntegerID3Tags, frameValue: number): this;
     setFrame(
       frameName: 'USLT',
-      frameValue: {language?: string; description: string; lyrics: string}
+      frameValue: {language?: string; description: string; lyrics: string},
     ): this;
     setFrame(
       frameName: 'APIC',
@@ -75,15 +75,15 @@ declare module 'browser-id3-writer' {
         data: Buffer;
         description: string;
         useUnicodeEncoding?: boolean;
-      }
+      },
     ): this;
     setFrame(
       frameName: 'TXXX',
-      frameValue: {description: string; value: string}
+      frameValue: {description: string; value: string},
     ): this;
     setFrame(
       frameName: 'COMM',
-      frameValue: {language?: string; description: string; text: string}
+      frameValue: {language?: string; description: string; text: string},
     ): this;
     setFrame(frameName: 'PRIV', frameValue: {id: string; data: Buffer}): this;
 

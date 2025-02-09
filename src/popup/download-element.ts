@@ -122,7 +122,7 @@ export class HTMLDownloadElement extends HTMLElement {
     this.stateIconElement_ = this.querySelector('.state i')!;
     this.nameElement_ = this.querySelector('.name')!;
     this.estimatedTimeLeftElement_ = this.querySelector(
-      '.estimated-time-left'
+      '.estimated-time-left',
     )!;
     this.downloadSpeedElement_ = this.querySelector('.download-speed')!;
   }
@@ -136,7 +136,7 @@ export class HTMLDownloadElement extends HTMLElement {
     this.setAttribute('state', this.downloadItem_.state);
 
     this.stateIconElement_.classList.value = this.stateIconStyle_(
-      downloadItem.state
+      downloadItem.state,
     );
     this.nameElement_.innerHTML = this.trimNameToLength_(downloadItem.name, 15);
 

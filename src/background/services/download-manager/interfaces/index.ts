@@ -29,7 +29,7 @@ export type EventType = 'add' | 'interrupted' | 'progress' | 'complete';
 export type AsyncEventCallback = (item: DownloadItem) => Promise<void>;
 export type AsyncErrorCallback = (
   item: DownloadItem,
-  err: Error
+  err: Error,
 ) => Promise<void>;
 
 export interface DownloadManager {
@@ -40,7 +40,7 @@ export interface DownloadManager {
     uri: string,
     name: string,
     filename: string,
-    downloadPath?: string
+    downloadPath?: string,
   ): DownloadItem;
   /**
    * Stops downloading.
