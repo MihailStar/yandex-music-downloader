@@ -23,6 +23,7 @@ function getTrackTitle(trackInfo: TrackInfo): string {
 }
 
 function getAlbumTitle(trackInfo: TrackInfo): string {
+  // eslint-disable-next-line prettier/prettier
   const {track: {albums: [album]}} = trackInfo;
 
   if (album === undefined) {
