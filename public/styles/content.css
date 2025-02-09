@@ -71,6 +71,10 @@
   transition-delay: 0s, 0s, 0s;
 }
 
+.page-album .page__YMD-button {
+  margin-left: 10px !important;
+}
+
 .page__YMD-button:hover .page__YMD-icon {
   opacity: 0.85 !important;
 }
