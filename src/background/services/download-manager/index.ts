@@ -1,5 +1,6 @@
 import {IncomingMessage} from 'http';
 import https from 'https';
+import {getExceptionError} from '../../get-exception-error';
 import {
   AsyncErrorCallback,
   AsyncEventCallback,
@@ -112,10 +113,10 @@ export class DownloadManager implements IDownloadManager {
         /* EMIT complete */
         this.emit_('complete', downloadItem);
       }
-    } catch (err) {
+    } catch (reason) {
       downloadItem.state = DownloadItemState.ERROR;
       /* EMIT ERROR */
-      this.emitError_(downloadItem, err);
+      this.emitError_(downloadItem, getExceptionError(reason));
     }
 
     this.inProgressSize_--;
@@ -247,8 +248,8 @@ export class DownloadManager implements IDownloadManager {
     for await (const listener of this.listeners_[type]) {
       try {
         await listener(item);
-      } catch (err) {
-        console.error(err);
+      } catch (reason) {
+        console.error(reason);
       }
     }
   }
@@ -260,8 +261,8 @@ export class DownloadManager implements IDownloadManager {
     for await (const errorListener of this.errorListeners_) {
       try {
         await errorListener(item, err);
-      } catch (err) {
-        console.error(err);
+      } catch (reason) {
+        console.error(reason);
       }
     }
   }

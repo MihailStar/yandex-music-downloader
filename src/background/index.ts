@@ -1,5 +1,6 @@
 import {IncomingMessage} from 'http';
 import https from 'https';
+import {getExceptionError} from './get-exception-error';
 import {ChromeMessage, ChromeMessageType} from './interfaces';
 import {DownloadManager} from './services/download-manager';
 import {DownloadItem} from './services/download-manager/interfaces';
@@ -173,8 +174,8 @@ export class BackgroundApiService {
           },
         );
       });
-    } catch (err) {
-      BackgroundApiService.emitError_(err);
+    } catch (reason) {
+      BackgroundApiService.emitError_(getExceptionError(reason));
     }
   }
   /**
@@ -262,8 +263,8 @@ export class BackgroundApiService {
         path,
         {trackId, locale: this.yandexMusicApi.getLocale()},
       );
-    } catch (err) {
-      BackgroundApiService.emitError_(err);
+    } catch (reason) {
+      BackgroundApiService.emitError_(getExceptionError(reason));
     }
   }
   /**
@@ -312,8 +313,8 @@ export class BackgroundApiService {
             path,
             {trackId: track.id, locale: this.yandexMusicApi.getLocale()},
           );
-        } catch (err) {
-          BackgroundApiService.emitError_(err);
+        } catch (reason) {
+          BackgroundApiService.emitError_(getExceptionError(reason));
         }
       }
       ++volumeIndex;
@@ -354,8 +355,8 @@ export class BackgroundApiService {
           path,
           {trackId: track.id, locale: this.yandexMusicApi.getLocale()},
         );
-      } catch (err) {
-        BackgroundApiService.emitError_(err);
+      } catch (reason) {
+        BackgroundApiService.emitError_(getExceptionError(reason));
       }
     }
   }
@@ -397,8 +398,8 @@ export class BackgroundApiService {
           path,
           {trackId: track.id, locale: this.yandexMusicApi.getLocale()},
         );
-      } catch (err) {
-        BackgroundApiService.emitError_(err);
+      } catch (reason) {
+        BackgroundApiService.emitError_(getExceptionError(reason));
       }
     }
   }
