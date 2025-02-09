@@ -22,25 +22,29 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://music.yandex.uz/*", "*://music.yandex.by/*", "*://music.yandex.ru/*", "*://music.yandex.ua/*", "*://music.yandex.kz/*", "*://music.yandex.com/*"],
+      "matches": [
+        "*://music.yandex.uz/*",
+        "*://music.yandex.by/*",
+        "*://music.yandex.ru/*",
+        "*://music.yandex.ua/*",
+        "*://music.yandex.kz/*",
+        "*://music.yandex.com/*"
+      ],
       "js": ["content.js"],
       "css": ["styles/content.css"]
     }
   ],
-  "web_accessible_resources": [
-    "images/icon-dark.svg",
-    "images/icon-light.svg"
-  ],
+  "web_accessible_resources": ["images/icon-dark.svg", "images/icon-light.svg"],
   "browser_action": {
     "default_icon": "images/inactive-icon.png",
     "default_popup": "view/popup.html"
   },
-  "icons":{
-    "16":"images/logo/logo16.png",
-    "24":"images/logo/logo24.png",
-    "32":"images/logo/logo32.png",
-    "48":"images/logo/logo48.png",
-    "128":"images/logo/logo128.png"
+  "icons": {
+    "16": "images/logo/logo16.png",
+    "24": "images/logo/logo24.png",
+    "32": "images/logo/logo32.png",
+    "48": "images/logo/logo48.png",
+    "128": "images/logo/logo128.png"
   },
   "manifest_version": 2
 }
