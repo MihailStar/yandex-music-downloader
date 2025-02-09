@@ -517,19 +517,19 @@ chrome.runtime.onConnect.addListener(async port => {
         break;
       }
       case ChromeMessageType.DOWNLOAD_TRACK: {
-        backgroundApi.downloadTrack(message.trackId);
+        void backgroundApi.downloadTrack(message.trackId);
         break;
       }
       case ChromeMessageType.DOWNLOAD_ALBUM: {
-        backgroundApi.downloadAlbum(message.albumId);
+        void backgroundApi.downloadAlbum(message.albumId);
         break;
       }
       case ChromeMessageType.DOWNLOAD_PLAYLIST: {
-        backgroundApi.downloadPlaylist(message.owner, message.kind);
+        void backgroundApi.downloadPlaylist(message.owner, message.kind);
         break;
       }
       case ChromeMessageType.DOWNLOAD_ARTIST: {
-        backgroundApi.downloadArtist(message.artistId);
+        void backgroundApi.downloadArtist(message.artistId);
         break;
       }
       case ChromeMessageType.LIST_DOWNLOAD_ITEMS: {

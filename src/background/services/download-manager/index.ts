@@ -87,7 +87,7 @@ export class DownloadManager implements IDownloadManager {
     downloadItem.state = DownloadItemState.IN_PROGRESS;
 
     /* EMIT state change */
-    this.emit_('progress', downloadItem);
+    void this.emit_('progress', downloadItem);
 
     try {
       downloadItem.bytes = await this.downloadBuffer_(
@@ -100,29 +100,29 @@ export class DownloadManager implements IDownloadManager {
             closeConnection();
           }
           /* EMIT progress */
-          this.emit_('progress', downloadItem);
+          void this.emit_('progress', downloadItem);
         },
       );
 
       if (downloadItem.bytes === null) {
         downloadItem.state = DownloadItemState.INTERRUPTED;
         /* EMIT interrupted */
-        this.emit_('interrupted', downloadItem);
+        void this.emit_('interrupted', downloadItem);
       } else {
         downloadItem.state = DownloadItemState.COMPLETE;
         /* EMIT complete */
-        this.emit_('complete', downloadItem);
+        void this.emit_('complete', downloadItem);
       }
     } catch (reason) {
       downloadItem.state = DownloadItemState.ERROR;
       /* EMIT ERROR */
-      this.emitError_(downloadItem, getExceptionError(reason));
+      void this.emitError_(downloadItem, getExceptionError(reason));
     }
 
     this.inProgressSize_--;
 
     this.queueRemove_(downloadItem.id);
-    this.queueProcessNext_();
+    void this.queueProcessNext_();
   }
 
   constructor(concurrency = 1) {
@@ -158,9 +158,9 @@ export class DownloadManager implements IDownloadManager {
 
     this.downloadQueue_.push(downloadItem);
 
-    this.emit_('add', downloadItem);
+    void this.emit_('add', downloadItem);
 
-    this.queueProcessNext_();
+    void this.queueProcessNext_();
 
     return downloadItem;
   }
@@ -179,7 +179,7 @@ export class DownloadManager implements IDownloadManager {
       } else if (downloadItem.state === DownloadItemState.PENDING) {
         downloadItem.state = DownloadItemState.INTERRUPTED;
         /* EMIT interrupted */
-        this.emit_('interrupted', downloadItem);
+        void this.emit_('interrupted', downloadItem);
         this.queueRemove_(downloadItemId);
       }
     }
@@ -195,7 +195,7 @@ export class DownloadManager implements IDownloadManager {
    */
   run(): void {
     this.queuePaused_ = false;
-    this.queueProcessNext_();
+    void this.queueProcessNext_();
   }
   /**
    * Stops queue execution. Doen't stop downloads in progress.
