@@ -1,9 +1,8 @@
-const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
-const config = {
+module.exports = {
   entry: {
     background: path.join(__dirname, "src/background/index.ts"),
     content: path.join(__dirname, "src/content/index.ts"),
@@ -74,5 +73,3 @@ const config = {
     })
   ],
 };
-
-module.exports = config;
