@@ -1,4 +1,6 @@
+// eslint-disable-next-line n/no-unpublished-require
 const CopyPlugin = require('copy-webpack-plugin');
+// eslint-disable-next-line n/no-unpublished-require
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const path = require('path');
 
