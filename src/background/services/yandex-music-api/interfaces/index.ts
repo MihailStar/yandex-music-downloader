@@ -128,6 +128,7 @@ export type Track = {
 export type Album = {
   readonly id: number;
   readonly title: string;
+  readonly version?: string;
   readonly metaType: AlbumMetaType;
   readonly contentWarning: 'explicit';
 
