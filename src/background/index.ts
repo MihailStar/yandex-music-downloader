@@ -7,14 +7,11 @@ import {DownloadItem} from './services/download-manager/interfaces';
 import {TrackID3TagWriter} from './services/id3-tag-writer';
 import {UserSettings} from './services/user-settings';
 import {YandexMusicAPI} from './services/yandex-music-api';
+import {Track} from './services/yandex-music-api/interfaces';
 
 type ErrorCallback = (err: Error) => void;
 
-type TrackInfo = Awaited<ReturnType<YandexMusicAPI['getTrack']>>;
-
-function getTrackTitle(trackInfo: TrackInfo): string {
-  const {track} = trackInfo;
-
+function getTrackTitle(track: Track): string {
   if (track.version === undefined) {
     return track.title;
   }
@@ -22,9 +19,9 @@ function getTrackTitle(trackInfo: TrackInfo): string {
   return `${track.title} ${track.version}`;
 }
 
-function getAlbumTitle(trackInfo: TrackInfo): string {
+function getAlbumTitle(track: Track): string {
   // eslint-disable-next-line prettier/prettier
-  const {track: {albums: [album]}} = trackInfo;
+  const {albums: [album]} = track;
 
   if (album === undefined) {
     return '';
@@ -132,59 +129,59 @@ export class BackgroundApiService {
 
     try {
       /* get track info */
-      const track = await yandexMusicApi.getTrack(+item.customData.trackId);
+      const {track, lyric} = await yandexMusicApi.getTrack(
+        +item.customData.trackId,
+      );
 
       /* set id3 tags */
       const tagWriter = new TrackID3TagWriter(item.bytes!);
 
       tagWriter
         .setTitle(getTrackTitle(track))
-        .setType(track.track.type)
-        .setDuration(track.track.durationMs);
+        .setType(track.type)
+        .setDuration(track.durationMs);
 
       /* set album info */
-      if (track.track.albums.length > 0) {
+      if (track.albums.length > 0) {
         tagWriter
-          .setPositionInAlbum(track.track.albums[0].trackPosition.index)
-          .setVolume(track.track.albums[0].trackPosition.volume)
-          .setGenre(track.track.albums[0].genre)
+          .setPositionInAlbum(track.albums[0].trackPosition.index)
+          .setVolume(track.albums[0].trackPosition.volume)
+          .setGenre(track.albums[0].genre)
           .setAlbum({
             title: getAlbumTitle(track),
             artist:
-              track.track.albums[0].artists.length > 0
-                ? track.track.albums[0].artists[0].name
+              track.albums[0].artists.length > 0
+                ? track.albums[0].artists[0].name
                 : undefined,
-            year: track.track.albums[0].year,
+            year: track.albums[0].year,
           });
       }
 
       /* set artist info */
-      if (track.track.artists.length > 0) {
+      if (track.artists.length > 0) {
         tagWriter.setArtists(track.artists.map(artist => artist.name));
       }
 
       /* set cover */
-      if (track.track.coverUri) {
+      if (track.coverUri) {
         const cover = await this.downloadCover_(
           await yandexMusicApi.getCoverDownloadLink(
-            track.track.coverUri,
+            track.coverUri,
             BackgroundApiService.userSettings.coverSize,
           ),
         );
         tagWriter.setCover(cover, getTrackTitle(track));
       }
 
-      if (track.track.albums[0].labels.length !== 0) {
-        tagWriter.setLabels(
-          track.track.albums[0].labels.map(label => label.name),
-        );
+      if (track.albums[0].labels.length !== 0) {
+        tagWriter.setLabels(track.albums[0].labels.map(label => label.name));
       }
 
-      if (track.lyric.length !== 0) {
+      if (lyric.length !== 0) {
         tagWriter.setLyric(
-          track.lyric[0].fullLyrics,
-          track.lyric[0].fullLyrics && getTrackTitle(track),
-          track.lyric[0].textLanguage,
+          lyric[0].fullLyrics,
+          lyric[0].fullLyrics && getTrackTitle(track),
+          lyric[0].textLanguage,
         );
       }
 
@@ -269,9 +266,9 @@ export class BackgroundApiService {
   async downloadTrack(trackId: number): Promise<void> {
     try {
       /* get track info */
-      const track = await this.yandexMusicApi.getTrack(+trackId);
+      const {track} = await this.yandexMusicApi.getTrack(+trackId);
 
-      if (!track.track.available) return;
+      if (!track.available) return;
 
       const downloadUrl =
         await this.yandexMusicApi.getTrackDownloadLink(+trackId);
@@ -280,7 +277,7 @@ export class BackgroundApiService {
         BackgroundApiService.userSettings.filenameFormat,
         getTrackTitle(track),
         getAlbumTitle(track),
-        track.track.artists.length > 0 ? track.track.artists[0].name : '',
+        track.artists.length > 0 ? track.artists[0].name : '',
       );
 
       const path = BackgroundApiService.userSettings.downloadPath;
@@ -314,8 +311,8 @@ export class BackgroundApiService {
 
           const filename = BackgroundApiService.generateTrackFilename_(
             BackgroundApiService.userSettings.filenameFormat,
-            track.title,
-            track.albums.length > 0 ? track.albums[0].title : '',
+            getTrackTitle(track),
+            getAlbumTitle(track),
             track.artists.length > 0 ? track.artists[0].name : '',
           );
 
@@ -337,7 +334,7 @@ export class BackgroundApiService {
 
           BackgroundApiService.downloadManager.download(
             downloadUrl,
-            track.title,
+            getTrackTitle(track),
             filename + '.mp3',
             path,
             {trackId: track.id, locale: this.yandexMusicApi.getLocale()},
@@ -365,8 +362,8 @@ export class BackgroundApiService {
 
         const filename = BackgroundApiService.generateTrackFilename_(
           BackgroundApiService.userSettings.filenameFormat,
-          track.title,
-          track.albums.length > 0 ? track.albums[0].title : '',
+          getTrackTitle(track),
+          getAlbumTitle(track),
           track.artists.length > 0 ? track.artists[0].name : '',
         );
 
@@ -379,7 +376,7 @@ export class BackgroundApiService {
 
         BackgroundApiService.downloadManager.download(
           downloadUrl,
-          track.title,
+          getTrackTitle(track),
           filename + '.mp3',
           path,
           {trackId: track.id, locale: this.yandexMusicApi.getLocale()},
@@ -408,8 +405,8 @@ export class BackgroundApiService {
 
         const filename = BackgroundApiService.generateTrackFilename_(
           BackgroundApiService.userSettings.filenameFormat,
-          track.title,
-          track.albums.length > 0 ? track.albums[0].title : '',
+          getTrackTitle(track),
+          getAlbumTitle(track),
           track.artists.length > 0 ? track.artists[0].name : '',
         );
 
@@ -422,7 +419,7 @@ export class BackgroundApiService {
 
         BackgroundApiService.downloadManager.download(
           downloadUrl,
-          track.title,
+          getTrackTitle(track),
           filename + '.mp3',
           path,
           {trackId: track.id, locale: this.yandexMusicApi.getLocale()},

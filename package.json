@@ -1,6 +1,6 @@
 {
   "name": "yandex-music-downloader",
-  "version": "0.2.2-beta.1",
+  "version": "0.2.2-beta.2",
   "description": "",
   "main": "./build/src/background/index.js",
   "engines": {
